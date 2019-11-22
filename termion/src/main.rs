@@ -1,8 +1,5 @@
-mod engine;
-mod text;
-
 fn main() {
-    let mut engine = engine::Engine::new(&text::get_text());
+    let mut engine = engine::Engine::new(&extract_text::get_text());
     loop {
         match engine.cycle() {
             engine::Stopped => {
