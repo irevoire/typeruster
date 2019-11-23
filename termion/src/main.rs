@@ -26,16 +26,12 @@ fn main() {
             Some(Ok(Key::Backspace)) => {
                 match engine.handle_backspace() {
                     Running => continue,
-                    Delete(n, s) => {
+                    Del(n, s) => {
                         print!("{}", cursor::Left(n as u16));
                         print!("{}", color::Fg(color::Reset));
                         print!("{}", s);
                         print!("{}", cursor::Left(n as u16));
                         continue;
-                    }
-                    action => {
-                        println!("\nERROR unhandled action {:?}", action);
-                        return;
                     }
                 };
             }
@@ -55,7 +51,6 @@ fn main() {
             Valid(c) => print!("{}{}", color::Fg(color::Green), c),
             Good(c) => print!("{}{}", color::Fg(color::Reset), c),
             Invalid(c) | Bad(c) => print!("{}{}", color::Fg(color::Red), c),
-            _ => (),
         }
     }
 }

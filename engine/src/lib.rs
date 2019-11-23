@@ -6,9 +6,7 @@ pub struct Engine {
 }
 
 #[derive(Debug, PartialEq)]
-pub enum Action {
-    // how much chars where deleted
-    Delete(usize, String),
+pub enum Keys {
     // if a valid char was given
     Valid(char),
     // if a bad char was given move in an internal bad state
@@ -17,13 +15,20 @@ pub enum Action {
     Good(char),
     // if a bad char was given whilst being in a bad state
     Bad(char),
-    // nothing to do
-    Running,
     // no char remaining
     Finished,
 }
 
-pub use Action::*;
+#[derive(Debug, PartialEq)]
+pub enum Delete {
+    // nothing to do
+    Running,
+    // how much chars where deleted
+    Del(usize, String),
+}
+
+pub use Delete::*;
+pub use Keys::*;
 
 impl Engine {
     pub fn new(text: &str) -> Self {
@@ -34,7 +39,7 @@ impl Engine {
         }
     }
 
-    pub fn handle_keys(&mut self, k: char) -> Action {
+    pub fn handle_keys(&mut self, k: char) -> Keys {
         let next_key = self.text.iter().nth(self.position);
         if next_key.is_none() {
             return Finished;
@@ -54,7 +59,7 @@ impl Engine {
         result
     }
 
-    pub fn handle_backspace(&mut self) -> Action {
+    pub fn handle_backspace(&mut self) -> Delete {
         // first come back before the character we’re gonna delete
         if self.position == 0 {
             return Running;
@@ -64,6 +69,6 @@ impl Engine {
         if self.error.is_some() && self.error.unwrap() == self.position {
             self.error = None;
         }
-        Delete(1, self.text[self.position].to_string())
+        Del(1, self.text[self.position].to_string())
     }
 }
