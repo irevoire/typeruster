@@ -46,6 +46,7 @@ fn main() {
                 stdout.suspend_raw_mode().unwrap();
                 println!("{}", color::Fg(color::Reset));
                 println!("You finished with 2 hits per seconds");
+                println!("{:?}", engine.stats());
                 break;
             }
             Valid(c) => print!("{}{}", color::Fg(color::Green), c),

@@ -50,6 +50,7 @@ impl Engine {
     pub fn handle_keys(&mut self, k: char) -> Keys {
         let next_key = self.text.iter().nth(self.position);
         if next_key.is_none() && !self.is_error() {
+            self.result.finished();
             return Finished;
         } else if next_key.is_none() && self.is_error() {
             return Bad('\x00');
@@ -82,5 +83,9 @@ impl Engine {
         }
         self.result.delete();
         Del(1, self.text[self.position].to_string())
+    }
+
+    pub fn stats(&self) -> crate::result::Stats {
+        self.result.stats()
     }
 }
