@@ -1,11 +1,14 @@
+pub mod result;
+
 pub struct Engine {
     text: Vec<char>,
     position: usize,
     // if an error was made, then error store the position were you fucked up
     error: Option<usize>,
+    result: crate::result::Res,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Copy, Clone)]
 pub enum Keys {
     // if a valid char was given
     Valid(char),
@@ -19,7 +22,7 @@ pub enum Keys {
     Finished,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum Delete {
     // nothing to do
     Running,
@@ -36,6 +39,7 @@ impl Engine {
             text: text.chars().collect(),
             position: 0,
             error: None,
+            result: crate::result::Res::new(),
         }
     }
 
@@ -55,6 +59,7 @@ impl Engine {
             self.error = Some(self.position);
             Invalid(next_key)
         };
+        self.result.keys(result);
         self.position += 1;
         result
     }
@@ -69,6 +74,7 @@ impl Engine {
         if self.error.is_some() && self.error.unwrap() == self.position {
             self.error = None;
         }
+        self.result.delete();
         Del(1, self.text[self.position].to_string())
     }
 }
