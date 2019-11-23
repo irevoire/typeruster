@@ -1,5 +1,3 @@
-use termion::{color, cursor};
-
 pub struct Engine {
     text: Vec<char>,
     position: usize,
@@ -7,12 +5,25 @@ pub struct Engine {
     error: Option<usize>,
 }
 
-pub enum State {
+#[derive(Debug, PartialEq)]
+pub enum Action {
+    // how much chars where deleted
+    Delete(usize, String),
+    // if a valid char was given
+    Valid(char),
+    // if a bad char was given move in an internal bad state
+    Invalid(char),
+    // if a good char was given whilst being in a bad state
+    Good(char),
+    // if a bad char was given whilst being in a bad state
+    Bad(char),
+    // nothing to do
     Running,
-    Finished(u32),
+    // no char remaining
+    Finished,
 }
 
-pub use State::*;
+pub use Action::*;
 
 impl Engine {
     pub fn new(text: &str) -> Self {
@@ -23,43 +34,36 @@ impl Engine {
         }
     }
 
-    pub fn handle_keys(&mut self, k: char) -> State {
+    pub fn handle_keys(&mut self, k: char) -> Action {
         let next_key = self.text.iter().nth(self.position);
         if next_key.is_none() {
-            return Running;
+            return Finished;
         }
         let next_key = *next_key.unwrap();
-        if next_key == k && self.error.is_none() {
-            print!("{}{}", color::Fg(color::Green), next_key);
+        let result = if next_key == k && self.error.is_none() {
+            Valid(k)
         } else if next_key == k && self.error.is_some() {
-            print!("{}{}", color::Fg(color::Reset), next_key);
+            Good(next_key)
+        } else if self.error.is_some() {
+            Bad(next_key)
         } else {
             self.error = Some(self.position);
-            print!("{}{}", color::Fg(color::Red), next_key);
-        }
+            Invalid(next_key)
+        };
         self.position += 1;
-
-        if self.position == self.text.len() {
-            Finished(2)
-        } else {
-            Running
-        }
+        result
     }
 
-    pub fn handle_backspace(&mut self) -> State {
+    pub fn handle_backspace(&mut self) -> Action {
         // first come back before the character we’re gonna delete
         if self.position == 0 {
             return Running;
         }
-        print!("{}", cursor::Left(1));
         self.position -= 1;
         // reprint this character in white
-        print!("{}", color::Fg(color::Reset));
-        print!("{}", self.text.iter().nth(self.position).unwrap());
-        print!("{}", cursor::Left(1));
         if self.error.is_some() && self.error.unwrap() == self.position {
             self.error = None;
         }
-        Running
+        Delete(1, self.text[self.position].to_string())
     }
 }

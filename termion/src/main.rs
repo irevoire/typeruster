@@ -4,6 +4,8 @@ use termion::input::TermRead;
 use termion::raw::IntoRawMode;
 use termion::{color, cursor};
 
+use engine::*;
+
 fn main() {
     let mut stdin = stdin().keys();
     let mut stdout = stdout().into_raw_mode().unwrap();
@@ -19,11 +21,23 @@ fn main() {
         stdout.flush().unwrap();
         let c = match stdin.next() {
             None => break,
-            Some(Ok(Key::Ctrl('c'))) => break,
-            Some(Ok(Key::Esc)) => break,
+            Some(Ok(Key::Ctrl('c'))) => return,
+            Some(Ok(Key::Esc)) => return,
             Some(Ok(Key::Backspace)) => {
-                engine.handle_backspace();
-                continue;
+                match engine.handle_backspace() {
+                    Running => continue,
+                    Delete(n, s) => {
+                        print!("{}", cursor::Left(n as u16));
+                        print!("{}", color::Fg(color::Reset));
+                        print!("{}", s);
+                        print!("{}", cursor::Left(n as u16));
+                        continue;
+                    }
+                    action => {
+                        println!("\nERROR unhandled action {:?}", action);
+                        return;
+                    }
+                };
             }
             Some(Ok(Key::Char(c))) => c,
             err => {
@@ -32,12 +46,15 @@ fn main() {
             }
         };
         match engine.handle_keys(c) {
-            engine::Finished(n) => {
+            Finished => {
                 stdout.suspend_raw_mode().unwrap();
                 println!("{}", color::Fg(color::Reset));
-                println!("You finished with {} hits per seconds", n);
+                println!("You finished with 2 hits per seconds");
                 break;
             }
+            Valid(c) => print!("{}{}", color::Fg(color::Green), c),
+            Good(c) => print!("{}{}", color::Fg(color::Reset), c),
+            Invalid(c) | Bad(c) => print!("{}{}", color::Fg(color::Red), c),
             _ => (),
         }
     }
