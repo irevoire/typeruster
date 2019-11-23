@@ -43,10 +43,16 @@ impl Engine {
         }
     }
 
+    fn is_error(&self) -> bool {
+        self.error.is_some()
+    }
+
     pub fn handle_keys(&mut self, k: char) -> Keys {
         let next_key = self.text.iter().nth(self.position);
-        if next_key.is_none() {
+        if next_key.is_none() && !self.is_error() {
             return Finished;
+        } else if next_key.is_none() && self.is_error() {
+            return Bad('\x00');
         }
         let next_key = *next_key.unwrap();
         let result = if next_key == k && self.error.is_none() {
