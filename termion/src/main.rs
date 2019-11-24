@@ -13,7 +13,7 @@ fn main() {
 
     print!("{}", text); // TODO save the position of the cursor before
                         // printing the text so we can restore it right after
-    print!("{}", cursor::Left(200));
+    print!("\n\n\n{}", cursor::Left(200));
     stdout.flush().unwrap();
 
     let mut engine = engine::Engine::new(&text);
@@ -22,7 +22,6 @@ fn main() {
         let c = match stdin.next() {
             None => break,
             Some(Ok(Key::Ctrl('c'))) => return,
-            Some(Ok(Key::Esc)) => return,
             Some(Ok(Key::Backspace)) => {
                 match engine.handle_backspace() {
                     Running => continue,
@@ -45,8 +44,25 @@ fn main() {
             Finished => {
                 stdout.suspend_raw_mode().unwrap();
                 println!("{}", color::Fg(color::Reset));
-                println!("You finished with 2 hits per seconds");
-                println!("{:?}", engine.stats());
+                let result = engine.result();
+                println!("Time: {:?}", result.total_duration());
+                println!(
+                    "You made {} mistakes ({} useless hits)",
+                    result.total_errors(),
+                    result.useless_hits()
+                );
+                println!("Precision: {}%", result.precision());
+                println!(
+                    "Hits per seconds: {} ({} hits/min)",
+                    result.hits_per_seconds(),
+                    result.hits_per_minutes()
+                );
+                println!("Word per minutes: {}", result.word_per_minutes());
+                println!(
+                    "Time lost in error: {:?} ({}%)",
+                    result.time_lost_in_errors(),
+                    result.time_percentage_lost_in_errors()
+                );
                 break;
             }
             Valid(c) => print!("{}{}", color::Fg(color::Green), c),

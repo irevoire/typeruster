@@ -11,20 +11,6 @@ pub struct Res {
     last_input: Option<Instant>,
 }
 
-#[derive(Debug)]
-pub struct Stats {
-    /// each time a key was typed
-    pub total_hits: u32,
-    /// each time you made an error
-    pub total_errors: u32,
-    /// each useless key you typped because you were in an invalid state
-    pub useless_hits: u32,
-    /// hits per minutes
-    pub hits_per_minutes: f32,
-    /// words per minutes use a standard word size of 5
-    pub words_per_minutes: f32,
-}
-
 impl Res {
     pub fn new() -> Self {
         Res {
@@ -52,29 +38,77 @@ impl Res {
         self.last_input = Some(Instant::now());
     }
 
-    pub fn stats(&self) -> Stats {
-        let total_hits = self.inputs.len() as u32;
-        let total_errors = self.inputs.iter().fold(0, |acc, (ev, _)| match ev {
+    /// each time a key was typed
+    pub fn total_hits(&self) -> u32 {
+        self.inputs.len() as u32
+    }
+
+    /// each time you typped a good key
+    pub fn total_good_hits(&self) -> u32 {
+        self.inputs.iter().fold(0, |acc, (ev, _)| match ev {
+            Event::Key(crate::Keys::Valid(_)) | Event::Finished => acc + 1,
+            _ => acc,
+        })
+    }
+
+    /// each time you made an error
+    pub fn total_errors(&self) -> u32 {
+        self.inputs.iter().fold(0, |acc, (ev, _)| match ev {
             Event::Key(crate::Keys::Invalid(_)) => acc + 1,
             _ => acc,
-        });
-        let useless_hits = self.inputs.iter().fold(0, |acc, (ev, _)| match ev {
+        })
+    }
+
+    /// each useless key you typped because you were in an invalid state
+    pub fn useless_hits(&self) -> u32 {
+        self.inputs.iter().fold(0, |acc, (ev, _)| match ev {
             Event::Key(crate::Keys::Valid(_)) | Event::Finished => acc,
             _ => acc + 1,
-        });
-        let total_duration = self
-            .inputs
+        })
+    }
+
+    /// the percentage of mistakes, lower is better
+    pub fn precision(&self) -> f32 {
+        let good_hits = self.total_good_hits() as f32;
+        let total = self.total_hits() as f32;
+        good_hits / total * 100.0
+    }
+
+    /// total time
+    pub fn total_duration(&self) -> Duration {
+        self.inputs
             .iter()
-            .fold(Duration::new(0, 0), |acc, (_, time)| acc + *time);
-        let hits_per_minutes =
-            total_hits as f32 / total_duration.as_millis() as f32 * 1000.0 * 60.0;
-        let words_per_minutes = hits_per_minutes / 5.0;
-        Stats {
-            total_hits,
-            total_errors,
-            useless_hits,
-            hits_per_minutes,
-            words_per_minutes,
-        }
+            .fold(Duration::new(0, 0), |acc, (_, time)| acc + *time)
+    }
+
+    /// time lost typping errors
+    pub fn time_lost_in_errors(&self) -> Duration {
+        self.inputs
+            .iter()
+            .fold(Duration::new(0, 0), |acc, (ev, time)| match ev {
+                Event::Key(crate::Keys::Valid(_)) | Event::Finished => acc,
+                _ => acc + *time,
+            })
+    }
+
+    /// the percentage of total time lost in errors
+    pub fn time_percentage_lost_in_errors(&self) -> f32 {
+        let time_lost = self.time_lost_in_errors().as_millis() as f32;
+        let total = self.total_duration().as_millis() as f32;
+        time_lost / total * 100.0
+    }
+
+    /// number of keypress per seconds
+    pub fn hits_per_seconds(&self) -> f32 {
+        self.total_hits() as f32 / self.total_duration().as_millis() as f32 * 1000.0
+    }
+
+    /// number of keypress per minutes
+    pub fn hits_per_minutes(&self) -> f32 {
+        self.hits_per_seconds() * 60.0
+    }
+
+    pub fn word_per_minutes(&self) -> f32 {
+        self.hits_per_minutes() / 5.0
     }
 }

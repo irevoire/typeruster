@@ -85,7 +85,7 @@ impl Engine {
         Del(1, self.text[self.position].to_string())
     }
 
-    pub fn stats(&self) -> crate::result::Stats {
-        self.result.stats()
+    pub fn result(self) -> crate::result::Res {
+        self.result
     }
 }
