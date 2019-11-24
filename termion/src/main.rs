@@ -11,9 +11,10 @@ fn main() {
     let mut stdout = stdout().into_raw_mode().unwrap();
     let text = extract_text::get_text();
 
-    print!("{}", text); // TODO save the position of the cursor before
-                        // printing the text so we can restore it right after
-    print!("\n\n\n{}", cursor::Left(200));
+    print!("{}", termion::cursor::Save);
+    print!("{}", text);
+    print!("{}", termion::cursor::Restore);
+
     stdout.flush().unwrap();
 
     let mut engine = engine::Engine::new(&text);
@@ -43,26 +44,7 @@ fn main() {
         match engine.handle_keys(c) {
             Finished => {
                 stdout.suspend_raw_mode().unwrap();
-                println!("{}", color::Fg(color::Reset));
-                let result = engine.result();
-                println!("Time: {:?}", result.total_duration());
-                println!(
-                    "You made {} mistakes ({} useless hits)",
-                    result.total_errors(),
-                    result.useless_hits()
-                );
-                println!("Precision: {}%", result.precision());
-                println!(
-                    "Hits per seconds: {} ({} hits/min)",
-                    result.hits_per_seconds(),
-                    result.hits_per_minutes()
-                );
-                println!("Word per minutes: {}", result.word_per_minutes());
-                println!(
-                    "Time lost in error: {:?} ({}%)",
-                    result.time_lost_in_errors(),
-                    result.time_percentage_lost_in_errors()
-                );
+                handle_result(&engine.result());
                 break;
             }
             Valid(c) => print!("{}{}", color::Fg(color::Green), c),
@@ -70,4 +52,26 @@ fn main() {
             Invalid(c) | Bad(c) => print!("{}{}", color::Fg(color::Red), c),
         }
     }
+}
+
+fn handle_result(result: &engine::Res) {
+    println!("{}", color::Fg(color::Reset));
+    println!("Time: {:.2?}", result.total_duration());
+    println!(
+        "You made {} mistakes ({} useless hits)",
+        result.total_errors(),
+        result.useless_hits()
+    );
+    println!("Precision: {:.2}%", result.precision());
+    println!(
+        "Hits per seconds: {:.2} ({:.2} hits/min)",
+        result.hits_per_seconds(),
+        result.hits_per_minutes()
+    );
+    println!("Word per minutes: {:.2}", result.word_per_minutes());
+    println!(
+        "Time lost in error: {:?} ({:.2}%)",
+        result.time_lost_in_errors(),
+        result.time_percentage_lost_in_errors()
+    );
 }

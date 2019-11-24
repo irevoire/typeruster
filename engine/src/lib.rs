@@ -1,4 +1,5 @@
 pub mod result;
+pub use result::Res;
 
 pub struct Engine {
     text: Vec<char>,
