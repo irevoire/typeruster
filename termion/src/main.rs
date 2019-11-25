@@ -1,4 +1,5 @@
 use std::io::{stdin, stdout, Write};
+use termion::cursor::DetectCursorPos;
 use termion::event::Key;
 use termion::input::TermRead;
 use termion::raw::IntoRawMode;
@@ -7,14 +8,17 @@ use termion::{color, cursor};
 use engine::*;
 
 fn main() {
-    let mut stdin = stdin().keys();
-    let mut stdout = stdout().into_raw_mode().unwrap();
     let text = extract_text::get_text();
 
+    println!("{}", termion::screen::ToAlternateScreen);
     print!("{}", termion::cursor::Save);
     print!("{}", text);
     print!("{}", termion::cursor::Restore);
 
+    let mut result = None;
+    let mut line_end: Vec<(u16, u16)> = Vec::new();
+    let mut stdin = stdin().keys();
+    let mut stdout = stdout().into_raw_mode().unwrap();
     stdout.flush().unwrap();
 
     let mut engine = engine::Engine::new(&text);
@@ -22,15 +26,22 @@ fn main() {
         stdout.flush().unwrap();
         let c = match stdin.next() {
             None => break,
-            Some(Ok(Key::Ctrl('c'))) => return,
+            Some(Ok(Key::Ctrl('c'))) => {
+                break;
+            }
             Some(Ok(Key::Backspace)) => {
                 match engine.handle_backspace() {
                     Running => continue,
                     Del(n, s) => {
-                        print!("{}", cursor::Left(n as u16));
-                        print!("{}", color::Fg(color::Reset));
-                        print!("{}", s);
-                        print!("{}", cursor::Left(n as u16));
+                        if &s == "\n" {
+                            let return_to = line_end.pop().unwrap();
+                            print!("{}", cursor::Goto(return_to.0, return_to.1));
+                        } else {
+                            print!("{}", cursor::Left(n as u16));
+                            print!("{}", color::Fg(color::Reset));
+                            print!("{}", s);
+                            print!("{}", cursor::Left(n as u16));
+                        }
                         continue;
                     }
                 };
@@ -38,19 +49,29 @@ fn main() {
             Some(Ok(Key::Char(c))) => c,
             err => {
                 println!("Unknown sequence {:?}", err);
-                return;
+                break;
             }
         };
         match engine.handle_keys(c) {
             Finished => {
-                stdout.suspend_raw_mode().unwrap();
-                handle_result(&engine.result());
+                result = Some(engine.result());
                 break;
+            }
+            Valid('\n') | Good('\n') | Invalid('\n') | Bad('\n') => {
+                let pos = stdout.cursor_pos().unwrap();
+                print!("{}", cursor::Goto(0, pos.1 + 1));
+                line_end.push(pos);
             }
             Valid(c) => print!("{}{}", color::Fg(color::Green), c),
             Good(c) => print!("{}{}", color::Fg(color::Reset), c),
             Invalid(c) | Bad(c) => print!("{}{}", color::Fg(color::Red), c),
         }
+    }
+    stdout.suspend_raw_mode().unwrap();
+    println!("{}", termion::screen::ToMainScreen);
+
+    if result.is_some() {
+        handle_result(&result.unwrap());
     }
 }
 
