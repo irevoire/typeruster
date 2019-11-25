@@ -15,6 +15,7 @@ macro_rules! color_print {
 
 fn main() {
     let text = extract_text::get_text();
+    let text = extract_text::use_french_quote(text);
 
     println!("{}", termion::screen::ToAlternateScreen);
     print!("{}", termion::cursor::Save);
