@@ -35,9 +35,9 @@ pub use Delete::*;
 pub use Keys::*;
 
 impl Engine {
-    pub fn new(text: &str) -> Self {
+    pub fn new(text: &extract_text::Text) -> Self {
         Engine {
-            text: text.chars().collect(),
+            text: text.text.chars().collect(),
             position: 0,
             error: None,
             result: crate::result::Res::new(),

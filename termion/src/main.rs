@@ -6,6 +6,7 @@ use termion::raw::IntoRawMode;
 use termion::{color, cursor};
 
 use engine::*;
+use extract_text::fix::Azerty;
 
 macro_rules! color_print {
     ($side:expr, $color:expr, $val:expr) => {
@@ -14,8 +15,8 @@ macro_rules! color_print {
 }
 
 fn main() {
-    let text = extract_text::get_text();
-    let text = extract_text::use_french_quote(text);
+    let mut text = extract_text::get_text();
+    text.azerty_preset();
 
     println!("{}", termion::screen::ToAlternateScreen);
     print!("{}", termion::cursor::Save);

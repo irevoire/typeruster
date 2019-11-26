@@ -1,25 +1,23 @@
-mod mots_surannes;
+pub mod fix;
+pub mod source;
 
-pub fn get_text() -> String {
-    mots_surannes::get_text().trim().to_string()
+pub struct Text {
+    pub text: String,
+    pub source: String,
 }
 
-pub fn use_french_quote(text: String) -> String {
-    text.chars()
-        .map(|c| match c {
-            '\'' => '’',
-            '‘' => '’',
-            c => c,
-        })
-        .collect()
+impl Text {
+    pub fn new(text: String, source: String) -> Self {
+        Text { text, source }
+    }
 }
 
-pub fn use_computer_quote(text: String) -> String {
-    text.chars()
-        .map(|c| match c {
-            '’' => '\'',
-            '‘' => '\'',
-            c => c,
-        })
-        .collect()
+pub fn get_text() -> crate::Text {
+    source::mots_surannes::get_text()
+}
+
+impl std::fmt::Display for Text {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.text)
+    }
 }

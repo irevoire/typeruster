@@ -1,5 +1,5 @@
-pub fn get_text() -> String {
-    String::from(
+pub fn get_text() -> crate::Text {
+    let s = String::from(
         r#"Craint qu’il est – puisque supposément dévoreur d’enfants, de princesses et de toute chair fraîche portant jupons – le loup tient une place particulière dans le langage des années de son règne. Quand son nom fait irruption dans une expression on est dans le sérieux voire le pesant.
 Sauvage et mystérieux, son évocation teinte le propos de gravité même quand il s’agit d’évoquer ses flatulences comme dans n’avoir jamais vu péter le loup sur la pierre de bois.
 
@@ -18,5 +18,6 @@ Le loup disparaissant petit à petit des faubourgs et des forêts suite à de me
 Cette double extinction ouvrira une voie royale à l’homme qui a vu l’homme qui a vu l’ours, sorte de sachant moderne qui n’a pas besoin de regarder les loups se soulager pour tout savoir, lui. Mais ceci faisant appel à un autre animal, c’est évidemment une autre histoire.
 
 "#,
-    )
+    );
+    crate::Text::new(s, String::from("mot surannes"))
 }
