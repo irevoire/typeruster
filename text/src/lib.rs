@@ -8,7 +8,10 @@ pub struct Text {
 
 impl Text {
     pub fn new(text: String, source: String) -> Self {
-        Text { text, source }
+        Text {
+            text: text.trim().to_string(),
+            source: source.trim().to_string(),
+        }
     }
 }
 
