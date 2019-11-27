@@ -1,5 +1,5 @@
 [package]
-name = "extract_text"
+name = "text"
 version = "0.1.0"
 authors = ["Thomas Campistron <irevoire@hotmail.fr>"]
 edition = "2018"

@@ -1,2 +1,2 @@
 [workspace]
-members = ["engine", "extract_text", "termion"]
+members = ["engine", "text", "termion"]

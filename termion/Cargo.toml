@@ -9,4 +9,4 @@ edition = "2018"
 [dependencies]
 termion = "*"
 engine = { path="../engine" }
-extract_text = { path="../extract_text" }
+text = { path="../text" }
