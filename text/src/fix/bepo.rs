@@ -9,5 +9,6 @@ impl Bepo for crate::Text {
         self.use_french_quote();
         self.use_french_double_quote();
         self.use_french_unbreakable_space();
+        self.add_ligature();
     }
 }

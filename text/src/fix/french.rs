@@ -2,6 +2,9 @@ pub trait French {
     fn use_french_quote(&mut self);
     fn use_french_double_quote(&mut self);
     fn use_french_unbreakable_space(&mut self);
+    fn add_ligature_in_oe(&mut self);
+    fn add_ligature_in_ae(&mut self);
+    fn add_ligature(&mut self);
 }
 
 impl French for crate::Text {
@@ -77,6 +80,23 @@ impl French for crate::Text {
             self.text = text.iter().collect();
         }
     }
+
+    fn add_ligature_in_oe(&mut self) {
+        for word in OE_WORDS.iter() {
+            self.text = self.text.replace(word, &word.replace("oe", "œ"));
+        }
+    }
+
+    fn add_ligature_in_ae(&mut self) {
+        for word in AE_WORDS.iter() {
+            self.text = self.text.replace(word, &word.replace("ae", "æ"));
+        }
+    }
+
+    fn add_ligature(&mut self) {
+        self.add_ligature_in_oe();
+        self.add_ligature_in_ae();
+    }
 }
 
 #[cfg(test)]
@@ -101,4 +121,211 @@ mod tests {
         text.use_french_unbreakable_space();
         assert_eq!(&text.text, ": 12 !?");
     }
+
+    #[test]
+    fn test_ligatures() {
+        let mut text = from("Bonjoeur coeur elaeis");
+        text.add_ligature();
+        assert_eq!(&text.text, "Bonjoeur cœur elæis");
+    }
 }
+
+const AE_WORDS: [&str; 48] = [
+    "aelie",
+    "suaeda",
+    "naevus",
+    "laelia",
+    "elaeis",
+    "caecum",
+    "caecal",
+    "aeolis",
+    "pygaere",
+    "penaeus",
+    "melaena",
+    "linnaea",
+    "cuphaea",
+    "althaea",
+    "aethuse",
+    "aeschne",
+    "aechmea",
+    "lonchaea",
+    "laetilia",
+    "furcraea",
+    "ex aequo",
+    "dracaena",
+    "anabaena",
+    "aegyrine",
+    "aegosome",
+    "aegocère",
+    "graellsia",
+    "crataegus",
+    "caecilius",
+    "angraecum",
+    "aepyornis",
+    "aegithale",
+    "chamaerops",
+    "aegopodium",
+    "chamaedorea",
+    "balaeniceps",
+    "archaeocète",
+    "aenigmatite",
+    "aegagropile",
+    "sphaerotheca",
+    "microsphaera",
+    "chaenichthys",
+    "caecotrophie",
+    "chamaecyparis",
+    "naevocarcinome",
+    "laeliocattleya",
+    "naevo-cellulaire",
+    "enterobacteriaceae",
+];
+
+const OE_WORDS: [&str; 146] = [
+    "oeuf",
+    "oeil",
+    "voeu",
+    "soeur",
+    "noeud",
+    "loess",
+    "coeur",
+    "oeuvé",
+    "roesti",
+    "moeurs",
+    "foetus",
+    "foetal",
+    "choeur",
+    "acoele",
+    "oeuvre",
+    "oestre",
+    "oeneis",
+    "oedipe",
+    "oedème",
+    "phoenix",
+    "poecile",
+    "coenure",
+    "coelome",
+    "oestrus",
+    "oestral",
+    "oersted",
+    "oechslé",
+    "monoecie",
+    "boehmite",
+    "oestrose",
+    "oestrone",
+    "oestriol",
+    "oestridé",
+    "oestrane",
+    "oenocyte",
+    "oenochoé",
+    "oenanthe",
+    "oedipode",
+    "oedipien",
+    "rhoeadale",
+    "pomoerium",
+    "foeticide",
+    "entamoeba",
+    "dioestrus",
+    "désoeuvré",
+    "coenurose",
+    "coelostat",
+    "coelomate",
+    "coeliaque",
+    "oesophage",
+    "oenothère",
+    "oenophile",
+    "oenomètre",
+    "oenologue",
+    "oenologie",
+    "oenilisme",
+    "oedomètre",
+    "oedicnème",
+    "synoecisme",
+    "poeciliidé",
+    "framboesia",
+    "froebélien",
+    "foetoscope",
+    "foetologie",
+    "dryocoetes",
+    "coelomique",
+    "coelentéré",
+    "amphicoele",
+    "amoebicide",
+    "acoelomate",
+    "oestrogène",
+    "oestradiol",
+    "oenothèque",
+    "oenométrie",
+    "oedométrie",
+    "oedogonium",
+    "oedématier",
+    "oedémateux",
+    "oecophylle",
+    "préoedipien",
+    "polyoestrus",
+    "melanorhoea",
+    "manoeuvrier",
+    "manoeuvrant",
+    "groenendael",
+    "foetoscopie",
+    "foetopathie",
+    "endamoebidé",
+    "dianthoecia",
+    "coenonympha",
+    "coelosomien",
+    "blastocoele",
+    "asa foetida",
+    "oesophagite",
+    "oesophagien",
+    "oenotechnie",
+    "oenologique",
+    "oenanthique",
+    "oecuméniste",
+    "oecuménisme",
+    "oecuménique",
+    "thécamoebien",
+    "stilboestrol",
+    "poecilogynie",
+    "poecilitique",
+    "poecilandrie",
+    "manoeuvrable",
+    "moeritherium",
+    "gymnamoebien",
+    "coelurosaure",
+    "coelioscopie",
+    "alstroemeria",
+    "oenothéracée",
+    "oenométrique",
+    "oedométrique",
+    "oecuménicité",
+    "poecilotherme",
+    "myxoedémateux",
+    "mégaoesophage",
+    "lagerstroemia",
+    "dicrocoeliose",
+    "oestrogénique",
+    "stoechiométrie",
+    "poecilothermie",
+    "foeto-maternel",
+    "oesophagotomie",
+    "oesophagoscope",
+    "ternstroemiacée",
+    "manoeuvrabilité",
+    "hypooestrogénie",
+    "coeliochirurgie",
+    "brachyoesophage",
+    "oesophagostomie",
+    "oesophagoscopie",
+    "oesophagectomie",
+    "oedipianisation",
+    "stoechiométrique",
+    "péri-oesophagien",
+    "hyperoestrogénie",
+    "homo oeconomicus",
+    "oesophagoplastie",
+    "éthinyloestradiol",
+    "oestroprogestatif",
+    "non-stoechiométrie",
+    "oestrogénothérapie",
+    "alpha-foeto-protéine",
+];
