@@ -80,7 +80,7 @@ fn main() {
                 print!("{}", cursor::Goto(0, pos.1 + 1));
                 line_end.push((pos.0, pos.1, true));
             }
-            Invalid(' ') | Bad(' ') => {
+            Invalid(' ') | Bad(' ') | Invalid(' ') | Bad(' ') => {
                 color_print!(color::Bg, color::Red, c);
             }
             Invalid(c) | Bad(c) => color_print!(color::Fg, color::Red, c),
