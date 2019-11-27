@@ -98,17 +98,35 @@ impl Res {
         time_lost / total * 100.0
     }
 
-    /// number of keypress per seconds
+    /// number of good keypress per seconds
     pub fn hits_per_seconds(&self) -> f32 {
-        self.total_hits() as f32 / self.total_duration().as_millis() as f32 * 1000.0
+        self.total_good_hits() as f32 / self.total_duration().as_millis() as f32 * 1000.0
     }
 
-    /// number of keypress per minutes
+    /// number of good keypress per minutes
     pub fn hits_per_minutes(&self) -> f32 {
         self.hits_per_seconds() * 60.0
     }
 
+    /// number of good word per minutes. This is an estimation computed considering the average
+    /// word size has a length of 5 characters.
     pub fn word_per_minutes(&self) -> f32 {
         self.hits_per_minutes() / 5.0
+    }
+
+    /// number of keypress per seconds
+    pub fn theorical_hits_per_seconds(&self) -> f32 {
+        self.total_hits() as f32 / self.total_duration().as_millis() as f32 * 1000.0
+    }
+
+    /// number of keypress per minutes
+    pub fn theorical_hits_per_minutes(&self) -> f32 {
+        self.theorical_hits_per_seconds() * 60.0
+    }
+
+    /// number of word you could have wrote per minutes if you didn’t made mistakes. This is
+    /// an estimation computed considering the average word size has a length of 5 characters.
+    pub fn theorical_word_per_minutes(&self) -> f32 {
+        self.theorical_hits_per_minutes() / 5.0
     }
 }
