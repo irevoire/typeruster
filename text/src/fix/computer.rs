@@ -1,7 +1,7 @@
 pub trait Computer {
     fn use_computer_quote(&mut self);
-    fn use_only_simple_tiret(&mut self);
-    fn use_only_computer_double(&mut self);
+    fn use_computer_double_quote(&mut self);
+    fn use_computer_dash(&mut self);
 }
 
 impl Computer for crate::Text {
@@ -20,7 +20,7 @@ impl Computer for crate::Text {
     }
 
     /// change all the strange hyphens / dash into the "normal" dash: `-`.
-    fn use_only_simple_tiret(&mut self) {
+    fn use_computer_dash(&mut self) {
         self.text = self
             .text
             .chars()
@@ -32,7 +32,7 @@ impl Computer for crate::Text {
     }
 
     /// change all the strange double quote into the "normal" double quote: `"`.
-    fn use_only_computer_double(&mut self) {
+    fn use_computer_double_quote(&mut self) {
         self.text = self
             .text
             .chars()

@@ -2,9 +2,9 @@ pub trait French {
     fn use_french_quote(&mut self);
     fn use_french_double_quote(&mut self);
     fn use_french_unbreakable_space(&mut self);
-    fn add_ligature_in_oe(&mut self);
-    fn add_ligature_in_ae(&mut self);
-    fn add_ligature(&mut self);
+    fn use_french_ligature_in_oe(&mut self);
+    fn use_french_ligature_in_ae(&mut self);
+    fn use_french_ligatures(&mut self);
 }
 
 impl French for crate::Text {
@@ -81,21 +81,21 @@ impl French for crate::Text {
         }
     }
 
-    fn add_ligature_in_oe(&mut self) {
+    fn use_french_ligature_in_oe(&mut self) {
         for word in OE_WORDS.iter() {
             self.text = self.text.replace(word, &word.replace("oe", "œ"));
         }
     }
 
-    fn add_ligature_in_ae(&mut self) {
+    fn use_french_ligature_in_ae(&mut self) {
         for word in AE_WORDS.iter() {
             self.text = self.text.replace(word, &word.replace("ae", "æ"));
         }
     }
 
-    fn add_ligature(&mut self) {
-        self.add_ligature_in_oe();
-        self.add_ligature_in_ae();
+    fn use_french_ligatures(&mut self) {
+        self.use_french_ligature_in_oe();
+        self.use_french_ligature_in_ae();
     }
 }
 

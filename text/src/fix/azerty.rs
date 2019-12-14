@@ -7,7 +7,7 @@ pub trait Azerty {
 impl Azerty for crate::Text {
     fn azerty_preset(&mut self) {
         self.use_computer_quote();
-        self.use_only_simple_tiret();
-        self.use_only_computer_double();
+        self.use_computer_double_quote();
+        self.use_computer_dash();
     }
 }
