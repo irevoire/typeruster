@@ -6,7 +6,6 @@ use termion::raw::IntoRawMode;
 use termion::{color, cursor};
 
 use engine::*;
-use text::fix::Bepo;
 
 macro_rules! color_print {
     ($side:expr, $color:expr, $val:expr) => {
@@ -16,7 +15,8 @@ macro_rules! color_print {
 
 fn main() {
     let mut text = text::get_text();
-    text.bepo_french_preset();
+    let args = args::parse();
+    args.apply_fix(&mut text);
 
     println!("{}", termion::screen::ToAlternateScreen);
     print!("{}", termion::cursor::Save);
