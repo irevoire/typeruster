@@ -14,9 +14,9 @@ macro_rules! color_print {
 }
 
 fn main() {
-    let mut text = text::get_text();
-    let args = args::parse();
-    args.apply_fix(&mut text);
+    let mut args = args::parse();
+    args.apply_fix();
+    let text = args.text();
 
     println!("{}", termion::screen::ToAlternateScreen);
     print!("{}", termion::cursor::Save);

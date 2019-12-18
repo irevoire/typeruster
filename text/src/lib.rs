@@ -15,10 +15,6 @@ impl Text {
     }
 }
 
-pub fn get_text() -> crate::Text {
-    source::mots_surannes::get_text()
-}
-
 impl std::fmt::Display for Text {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.text)

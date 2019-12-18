@@ -7,14 +7,19 @@ use text::fix::*;
 use text::Text;
 
 pub struct Args {
+    source: Text,
     fix: Vec<fn(&mut Text)>,
 }
 
 impl Args {
-    pub fn apply_fix(&self, text: &mut Text) {
+    pub fn apply_fix(&mut self) {
         for fix in self.fix.iter() {
-            fix(text);
+            fix(&mut self.source);
         }
+    }
+
+    pub fn text(&self) -> &Text {
+        &self.source
     }
 }
 
@@ -22,6 +27,12 @@ pub fn parse() -> Args {
     let matches = App::new("TypeRuster")
         .author("Thomas C. <thomas.campistron.etu@univ-lille.fr>")
         .about("Typeracer written in rust")
+        .arg(
+            Arg::with_name("from")
+                .help("Let you choose the text you want to type from a file")
+                .long("from")
+                .takes_value(true),
+        )
         .arg(
             Arg::with_name("computer-single-quote")
                 .help("Only use computer single quote: '")
@@ -115,6 +126,7 @@ pub fn parse() -> Args {
         )
         .get_matches();
     let mut fix: Vec<fn(&mut Text)> = Vec::new();
+    let mut source = text::source::mots_surannes::get_text();
 
     if let Some(preset) = matches.subcommand_matches("preset") {
         let preset = preset.value_of("preset").unwrap();
@@ -126,6 +138,10 @@ pub fn parse() -> Args {
             "qwerty" => fix.push(Text::azerty_preset),
             _ => (),
         }
+    }
+
+    if let Some(file) = matches.value_of("from") {
+        source = text::source::file::from(file);
     }
 
     if matches.is_present("computer-single-quote") {
@@ -172,5 +188,5 @@ pub fn parse() -> Args {
         fix.push(Text::use_french_ligature_in_oe);
     }
 
-    Args { fix }
+    Args { fix, source }
 }
