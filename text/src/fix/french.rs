@@ -125,7 +125,7 @@ mod tests {
     #[test]
     fn test_ligatures() {
         let mut text = from("Bonjoeur coeur elaeis");
-        text.add_ligature();
+        text.use_french_ligatures();
         assert_eq!(&text.text, "Bonjoeur cœur elæis");
     }
 }
