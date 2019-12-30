@@ -121,9 +121,10 @@ fn handle_result(result: &engine::Res) {
         "Without errors you would’ve reached: {:.2} word per minutes.",
         result.theorical_word_per_minutes()
     );
+    let time = result.time_lost_in_errors();
     println!(
-        "Time lost in error: {:?} ({:.2}%)",
-        result.time_lost_in_errors(),
+        "Time lost in error: {:?}s ({:.2}%)",
+        time.as_secs(),
         result.time_percentage_lost_in_errors()
     );
 
