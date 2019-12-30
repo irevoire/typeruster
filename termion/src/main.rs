@@ -85,7 +85,7 @@ fn main() {
                     write!(screen, "{}", cursor::Goto(0, pos.1 + 1)).unwrap();
                     line_end.push((pos.0, pos.1, true));
                 }
-                Invalid(' ') | Bad(' ') | Invalid(' ') | Bad(' ') => {
+                Invalid(c) | Bad(c) if c.is_whitespace() => {
                     color_print!(screen, color::Bg, color::Red, c);
                 }
                 Invalid(c) | Bad(c) => color_print!(screen, color::Fg, color::Red, c),
