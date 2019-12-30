@@ -35,12 +35,12 @@ pub use Delete::*;
 pub use Keys::*;
 
 impl Engine {
-    pub fn new(text: &text::Text) -> Self {
+    pub fn new(text: text::Text) -> Self {
         Engine {
             text: text.text.chars().collect(),
             position: 0,
             error: None,
-            result: crate::result::Res::new(),
+            result: crate::result::Res::new(text),
         }
     }
 

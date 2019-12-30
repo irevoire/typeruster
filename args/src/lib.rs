@@ -18,8 +18,8 @@ impl Args {
         }
     }
 
-    pub fn text(&self) -> &Text {
-        &self.source
+    pub fn text(self) -> Text {
+        self.source
     }
 }
 

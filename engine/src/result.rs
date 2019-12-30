@@ -7,13 +7,15 @@ enum Event {
 }
 
 pub struct Res {
+    text: text::Text,
     inputs: Vec<(Event, Duration)>,
     last_input: Option<Instant>,
 }
 
 impl Res {
-    pub fn new() -> Self {
+    pub fn new(text: text::Text) -> Self {
         Res {
+            text: text,
             inputs: Vec::new(),
             last_input: None,
         }
@@ -36,6 +38,10 @@ impl Res {
             self.inputs.push((e, t.elapsed()));
         }
         self.last_input = Some(Instant::now());
+    }
+
+    pub fn source(&self) -> &str {
+        &self.text.source
     }
 
     /// each time a key was typed

@@ -35,7 +35,7 @@ fn main() {
         // switch of line. This way we know if we need to delete a red square.
         let mut line_end: Vec<(u16, u16, bool)> = Vec::new();
 
-        let mut engine = engine::Engine::new(&text);
+        let mut engine = engine::Engine::new(text);
         loop {
             screen.flush().unwrap();
             let c = match stdin.next() {
@@ -100,6 +100,7 @@ fn main() {
         handle_result(&result.unwrap());
     }
 }
+
 fn handle_result(result: &engine::Res) {
     println!("{}", color::Fg(color::Reset));
     let time = result.total_duration();
@@ -125,4 +126,6 @@ fn handle_result(result: &engine::Res) {
         result.time_lost_in_errors(),
         result.time_percentage_lost_in_errors()
     );
+
+    println!("\n{}", result.source());
 }
