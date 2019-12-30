@@ -65,8 +65,8 @@ impl French for crate::Text {
                         idx += 1;
                         continue;
                     }
-                    // normal space
-                    ' ' => text[idx - 1] = ' ',
+                    // all kind of space
+                    space if space.is_whitespace() => text[idx - 1] = ' ',
                     // every other characters
                     _ => {
                         idx += 1;
