@@ -2,6 +2,7 @@ pub trait Computer {
     fn use_computer_quote(&mut self);
     fn use_computer_double_quote(&mut self);
     fn use_computer_dash(&mut self);
+    fn use_simple_space(&mut self);
 }
 
 impl Computer for crate::Text {
@@ -40,6 +41,18 @@ impl Computer for crate::Text {
                 '«' | '»' | '„' | '“' | '”' => '"',
                 // second
                 '″' => '"',
+                c => c,
+            })
+            .collect()
+    }
+
+    fn use_simple_space(&mut self) {
+        self.text = self
+            .text
+            .chars()
+            .map(|c| match c {
+                '\n' | '\t' => c,
+                c if c.is_whitespace() => ' ',
                 c => c,
             })
             .collect()

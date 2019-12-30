@@ -35,7 +35,13 @@ pub fn parse() -> Args {
         )
         .arg(
             Arg::with_name("tazzon")
-                .help("Let you choose the text you want to type from the tazzon website")
+                .help(
+                    r#"Let you choose a text from the tazzon website.
+                    You need to specify the id of the text you want to play.
+                    You can also write "rand" to get a random text from the website
+                    (http://tazzon.free.fr/dactylotest/dactylotest/)
+                    "#,
+                )
                 .long("tazzon")
                 .takes_value(true),
         )
@@ -59,6 +65,11 @@ pub fn parse() -> Args {
             Arg::with_name("computer-dash")
                 .help("Only use computer dash: -")
                 .long("computer-dash"),
+        )
+        .arg(
+            Arg::with_name("use-simple-space")
+                .help("Only use the simple space character and remove all the unbreakable space, thin-space and things like that.")
+                .long("use-simple-space"),
         )
         .arg(
             Arg::with_name("english-double-quote")
@@ -167,6 +178,10 @@ pub fn parse() -> Args {
 
     if matches.is_present("computer-dash") {
         fix.push(Text::use_computer_dash);
+    }
+
+    if matches.is_present("simple-space") {
+        fix.push(Text::use_simple_space);
     }
 
     if matches.is_present("english-double-quote") {
