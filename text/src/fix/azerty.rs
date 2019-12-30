@@ -10,5 +10,6 @@ impl Azerty for crate::Text {
         self.use_computer_quote();
         self.use_computer_double_quote();
         self.use_computer_dash();
+        self.use_simple_dot();
     }
 }

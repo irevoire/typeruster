@@ -5,6 +5,7 @@ pub trait French {
     fn use_french_ligature_in_oe(&mut self);
     fn use_french_ligature_in_ae(&mut self);
     fn use_french_ligatures(&mut self);
+    fn use_french_three_dots(&mut self);
 }
 
 impl French for crate::Text {
@@ -96,6 +97,10 @@ impl French for crate::Text {
     fn use_french_ligatures(&mut self) {
         self.use_french_ligature_in_oe();
         self.use_french_ligature_in_ae();
+    }
+
+    fn use_french_three_dots(&mut self) {
+        self.text = self.text.replace("...", "…");
     }
 }
 

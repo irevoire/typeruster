@@ -29,117 +29,127 @@ pub fn parse() -> Args {
         .about("Typeracer written in rust")
         .arg(
             Arg::with_name("file")
-                .help("Let you choose the text you want to type from a file")
-                .long("file")
-                .takes_value(true),
+            .help("Let you choose the text you want to type from a file")
+            .long("file")
+            .takes_value(true),
         )
         .arg(
             Arg::with_name("tazzon")
-                .help(
-                    r#"Let you choose a text from the tazzon website.
+            .help(
+                r#"Let you choose a text from the tazzon website.
                     You need to specify the id of the text you want to play.
                     You can also write "rand" to get a random text from the website
                     (http://tazzon.free.fr/dactylotest/dactylotest/)
                     "#,
-                )
-                .long("tazzon")
-                .takes_value(true),
+            )
+            .long("tazzon")
+            .takes_value(true),
         )
         .arg(
             Arg::with_name("computer-single-quote")
-                .help("Only use computer single quote: '")
-                .conflicts_with("french-single-quote")
-                .long("computer-single-quote"),
+            .help("Only use computer single quote: '")
+            .conflicts_with("french-single-quote")
+            .long("computer-single-quote"),
         )
         .arg(
             Arg::with_name("computer-double-quote")
-                .help("Only use computer double quote: \"")
-                .conflicts_with_all(&[
-                    "english-double-quote",
-                    "german-double-quote",
-                    "french-double-quote",
-                ])
-                .long("computer-double-quote"),
+            .help("Only use computer double quote: \"")
+            .conflicts_with_all(&[
+                "english-double-quote",
+                "german-double-quote",
+                "french-double-quote",
+            ])
+            .long("computer-double-quote"),
         )
         .arg(
             Arg::with_name("computer-dash")
-                .help("Only use computer dash: -")
-                .long("computer-dash"),
+            .help("Only use computer dash: -")
+            .long("computer-dash"),
         )
         .arg(
-            Arg::with_name("use-simple-space")
-                .help("Only use the simple space character and remove all the unbreakable space, thin-space and things like that.")
-                .long("use-simple-space"),
+            Arg::with_name("simple-space")
+            .help("Only use the simple space character and remove all the unbreakable space, thin-space and things like that.")
+            .long("simple-space"),
+        )
+        .arg(
+            Arg::with_name("simple-dot")
+            .help("remove the … character for three dot ...")
+            .long("simple-dot"),
         )
         .arg(
             Arg::with_name("english-double-quote")
-                .help("Use english double quote: “ and ”")
-                .conflicts_with_all(&[
-                    "computer-double-quote",
-                    "german-double-quote",
-                    "french-double-quote",
-                ])
-                .long("english-double-quote"),
+            .help("Use english double quote: “ and ”")
+            .conflicts_with_all(&[
+                "computer-double-quote",
+                "german-double-quote",
+                "french-double-quote",
+            ])
+            .long("english-double-quote"),
         )
         .arg(
             Arg::with_name("german-double-quote")
-                .help("Use german double quote: „ and “")
-                .conflicts_with_all(&[
-                    "computer-double-quote",
-                    "english-double-quote",
-                    "french-double-quote",
-                ])
-                .long("german-double-quote"),
+            .help("Use german double quote: „ and “")
+            .conflicts_with_all(&[
+                "computer-double-quote",
+                "english-double-quote",
+                "french-double-quote",
+            ])
+            .long("german-double-quote"),
         )
         .arg(
             Arg::with_name("french-single-quote")
-                .help("Use french single quote: ’")
-                .conflicts_with("computer-single-quote")
-                .long("french-single-quote"),
+            .help("Use french single quote: ’")
+            .conflicts_with("computer-single-quote")
+            .long("french-single-quote"),
         )
         .arg(
             Arg::with_name("french-double-quote")
-                .help("Use french double quote: « and »")
-                .conflicts_with_all(&[
-                    "computer-double-quote",
-                    "english-double-quote",
-                    "german-double-quote",
-                ])
-                .long("french-double-quote"),
+            .help("Use french double quote: « and »")
+            .conflicts_with_all(&[
+                "computer-double-quote",
+                "english-double-quote",
+                "german-double-quote",
+            ])
+            .long("french-double-quote"),
         )
         .arg(
             Arg::with_name("french-unbreakable-space")
-                .help("Only use french double quote: « and »")
-                .long("french-unbreakable-space"),
+            .help("Only use french double quote: « and »")
+            .long("french-unbreakable-space"),
         )
         .arg(
             Arg::with_name("french-ligatures")
-                .help("Use french ligatures: æ and œ")
-                .long("french-ligatures"),
+            .help("Use french ligatures: æ and œ")
+            .long("french-ligatures"),
         )
         .arg(
             Arg::with_name("french-ae-ligature")
-                .help("Use french ligatures: æ")
-                .long("french-ae-ligature"),
+            .help("Use french ligatures: æ")
+            .long("french-ae-ligature"),
         )
         .arg(
             Arg::with_name("french-oe-ligature")
-                .help("Use french ligatures: œ")
-                .long("french-oe-ligature"),
+            .help("Use french ligatures: œ")
+            .long("french-oe-ligature"),
+        )
+        .arg(
+            Arg::with_name("french-three-dot")
+            .help("change the ... sequence for the character …")
+            .long("french-three-dot"),
         )
         .subcommand(
             SubCommand::with_name("preset")
-                .help("Choose a preset between: azerty, bepo, dvorak, qwerty")
-                .about("Choose a preset")
-                .arg(
-                    Arg::with_name("preset")
-                        .help("Select a preset")
-                        .required(true)
-                        .possible_value("azerty")
-                        .possible_values(&["bepo", "bépo"])
-                        .possible_value("dvorak")
-                        .possible_value("qwerty"),
-                ),
+            .help("Choose a preset between: azerty, bepo, dvorak, qwerty")
+            .about("Choose a preset")
+            .arg(
+                Arg::with_name("preset")
+                .help("Select a preset")
+                .required(true)
+                .possible_value("azerty")
+                .possible_values(&["bepo", "bépo"])
+                .possible_value("dvorak")
+                .possible_value("qwerty"),
+            ),
         )
         .get_matches();
     let mut fix: Vec<fn(&mut Text)> = Vec::new();
@@ -184,6 +194,10 @@ pub fn parse() -> Args {
         fix.push(Text::use_simple_space);
     }
 
+    if matches.is_present("simple-dot") {
+        fix.push(Text::use_simple_dot);
+    }
+
     if matches.is_present("english-double-quote") {
         fix.push(Text::use_english_double_quote);
     }
@@ -214,6 +228,10 @@ pub fn parse() -> Args {
 
     if matches.is_present("french-oe-ligature") {
         fix.push(Text::use_french_ligature_in_oe);
+    }
+
+    if matches.is_present("french-three-dots") {
+        fix.push(Text::use_french_three_dots);
     }
 
     Args { fix, source }

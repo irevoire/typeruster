@@ -16,6 +16,7 @@ impl Bepo for crate::Text {
         self.use_french_quote();
         self.use_french_double_quote();
         self.use_french_ligatures();
+        self.use_french_three_dots();
         // write back all the unbreakable space
         self.use_french_unbreakable_space();
     }

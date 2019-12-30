@@ -3,6 +3,7 @@ pub trait Computer {
     fn use_computer_double_quote(&mut self);
     fn use_computer_dash(&mut self);
     fn use_simple_space(&mut self);
+    fn use_simple_dot(&mut self);
 }
 
 impl Computer for crate::Text {
@@ -56,5 +57,9 @@ impl Computer for crate::Text {
                 c => c,
             })
             .collect()
+    }
+
+    fn use_simple_dot(&mut self) {
+        self.text = self.text.replace("…", "...");
     }
 }
