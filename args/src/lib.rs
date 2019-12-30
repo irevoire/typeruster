@@ -28,9 +28,15 @@ pub fn parse() -> Args {
         .author("Thomas C. <thomas.campistron.etu@univ-lille.fr>")
         .about("Typeracer written in rust")
         .arg(
-            Arg::with_name("from")
+            Arg::with_name("file")
                 .help("Let you choose the text you want to type from a file")
-                .long("from")
+                .long("file")
+                .takes_value(true),
+        )
+        .arg(
+            Arg::with_name("tazzon")
+                .help("Let you choose the text you want to type from the tazzon website")
+                .long("tazzon")
                 .takes_value(true),
         )
         .arg(
@@ -140,8 +146,15 @@ pub fn parse() -> Args {
         }
     }
 
-    if let Some(file) = matches.value_of("from") {
+    if let Some(file) = matches.value_of("file") {
         source = text::source::file::from(file);
+    }
+
+    if let Some(id) = matches.value_of("tazzon") {
+        match id.parse() {
+            Err(_) => source = text::source::tazzon::random(),
+            Ok(id) => source = text::source::tazzon::from(id),
+        }
     }
 
     if matches.is_present("computer-single-quote") {
