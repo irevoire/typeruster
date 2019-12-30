@@ -22,9 +22,9 @@ fn main() {
 
     {
         let mut screen = AlternateScreen::from(stdout());
-        write!(screen, "{}", termion::cursor::Save).unwrap();
+        write!(screen, "{}", termion::cursor::Goto(1, 1)).unwrap();
         write!(screen, "{}", text).unwrap();
-        write!(screen, "{}", termion::cursor::Restore).unwrap();
+        write!(screen, "{}", termion::cursor::Goto(1, 1)).unwrap();
         let mut screen = screen.into_raw_mode().unwrap();
 
         let mut stdin = stdin().keys();
